@@ -11,7 +11,17 @@ btnStartEl.setAttribute('disabled', true);
 const daysTimer = document.querySelector("[data-days]");
 const hoursTimer = document.querySelector("[data-hours]");
 const minutesTimer = document.querySelector("[data-minutes]");
-const secondsTimer = document.querySelector("[data-second]");
+const secondsTimer = document.querySelector("[data-seconds]");
+
+let selectedDay = new Date();
+
+let intervalId = null;
+
+//Перезагрузка страницы
+window.addEventListener('load', pageReload);
+
+function pageReload() { };
+
 
 //Библиотека flatpickr
 const options = {
@@ -20,7 +30,8 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    console.log(selectedDates[0]);
+    selectedDay = selectedDates[0];
+    console.log(selectedDay);
   },
 };
 
@@ -37,42 +48,47 @@ function onInputClick(event) {
     //window.alert("Please choose a date in the future");
   }
   btnStartEl.removeAttribute('disabled');
-
-  btnStartEl.addEventListener('click', onBtnClick);
-
-function onBtnClick(event) {
-  intervalId = setInterval(() => { 
-    const msResult = Date.now(options.selectedDates) - Date.now();
-    console.log(msResult);
-  }, 1000);
-}
 };
 
 //Клик по кнопке
-// btnStartEl.addEventListener('click', onBtnClick);
+btnStartEl.addEventListener('click', onBtnClick);
 
-// function onBtnClick(event) {
-//   intervalId = setInterval(() => { 
-//     const msResult = Date.now(options.onClose()) - Date.now();
-//     console.log(msResult);
-//   }, 1000);
-// }
+function onBtnClick(event) {
+  intervalId = setInterval(() => { 
+    const msResult = selectedDay.getTime() - Date.now();
+    const timer = convertMs(msResult);
+    const { days, hours, minutes, seconds } = timer;
 
+    if (msResult < 1000 || pageReload()) {
+      clearInterval(intervalId);
+    };
+    
+    //Выведение таймера
+    daysTimer.textContent = `${days}`
+    hoursTimer.textContent = `${hours}`
+    minutesTimer.textContent = `${minutes}`
+    secondsTimer.textContent = `${seconds}`
 
-// function convertMs(ms) {
-//   const second = 1000;
-//   const minute = second * 60;
-//   const hour = minute * 60;
-//   const day = hour * 24;
+  }, 1000);
+};
 
-//   const days = Math.floor(ms / day);
-//   const hours = Math.floor((ms % day) / hour);
-//   const minutes = Math.floor(((ms % day) % hour) / minute);
-//   const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+function convertMs(ms) {
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24;
 
-//   return { days, hours, minutes, seconds };
-// };
+  const days = addLeadingZero(Math.floor(ms / day));
+  const hours = addLeadingZero(Math.floor((ms % day) / hour));
+  const minutes = addLeadingZero(Math.floor(((ms % day) % hour) / minute));
+  const seconds = addLeadingZero(Math.floor((((ms % day) % hour) % minute) / second));
 
+  return { days, hours, minutes, seconds };
+};
+
+function addLeadingZero(value) {
+  return String(value).padStart(2, '0');
+};
 
 
 
