@@ -56,22 +56,27 @@ btnStartEl.addEventListener('click', onBtnClick);
 function onBtnClick(event) {
   intervalId = setInterval(() => { 
     const msResult = selectedDay.getTime() - Date.now();
-    const timer = convertMs(msResult);
-    const { days, hours, minutes, seconds } = timer;
+    const { days, hours, minutes, seconds } = convertMs(msResult);
 
     if (msResult < 1000 || pageReload()) {
       clearInterval(intervalId);
     };
     
-    //Выведение таймера
-    daysTimer.textContent = `${days}`
-    hoursTimer.textContent = `${hours}`
-    minutesTimer.textContent = `${minutes}`
-    secondsTimer.textContent = `${seconds}`
+    //Обновление таймера
+    timerUpdate({ days, hours, minutes, seconds });
 
   }, 1000);
 };
 
+//Функция обновления таймера
+function timerUpdate({ days, hours, minutes, seconds }) {
+    daysTimer.textContent = `${days}`
+    hoursTimer.textContent = `${hours}`
+    minutesTimer.textContent = `${minutes}`
+    secondsTimer.textContent = `${seconds}`
+};
+
+//Функция преобразования мс в дни, часы, минуты, секунды
 function convertMs(ms) {
   const second = 1000;
   const minute = second * 60;
