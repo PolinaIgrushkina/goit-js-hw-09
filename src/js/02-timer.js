@@ -76,7 +76,6 @@ function timerUpdate({ days, hours, minutes, seconds }) {
     secondsTimer.textContent = `${seconds}`
 };
 
-
 //Функция преобразования мс в дни, часы, минуты, секунды
 function convertMs(ms) {
   const second = 1000;
